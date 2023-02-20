@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33110.190
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "YaPiMT1", "YaPiMT1\YaPiMT1.csproj", "{1AF39C1A-48F4-4DC9-BE26-BA916C879FAF}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1AF39C1A-48F4-4DC9-BE26-BA916C879FAF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1AF39C1A-48F4-4DC9-BE26-BA916C879FAF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1AF39C1A-48F4-4DC9-BE26-BA916C879FAF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1AF39C1A-48F4-4DC9-BE26-BA916C879FAF}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {A71D9690-4690-4291-A2B1-74CA4C0F57CA}
+	EndGlobalSection
+EndGlobal
