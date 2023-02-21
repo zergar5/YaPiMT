@@ -1,10 +1,19 @@
-﻿using YaPiMT1.Models;
+﻿using YaPiMT1.IO;
+using YaPiMT1.Models;
 using YaPiMT1.Models.Tables;
+using YaPiMT1.Models.Tables.ConstTables;
 
-var constTable = new ConstTable("../YaPiMT1/Input/ConstTable.txt");
-var element = constTable.FindElement("%=");
-Console.WriteLine(element);
-constTable.PrintTable();
+var constTableReader = new ConstTableReader("../YaPiMT1/Input/");
+
+var stringConstTable = new StringConstTable("StringConstTable.txt", constTableReader);
+var stringElement = stringConstTable.FindElement("%=");
+Console.WriteLine(stringElement);
+stringConstTable.PrintTable();
+
+var charConstTable = new CharConstTable("CharConstTable.txt", constTableReader);
+var charElement = charConstTable.FindElement('+');
+Console.WriteLine(charElement);
+charConstTable.PrintTable();
 
 var variableTable = new VariableTable();
 variableTable.AddLexeme(new Lexeme("item", DataType.Undefined, "null"));
@@ -20,12 +29,12 @@ lexeme = variableTable.FindLexeme("size");
 Console.WriteLine($"{lexeme.Name} {lexeme.Type} {lexeme.Value}");
 lexeme = variableTable.FindLexeme("symbol");
 Console.WriteLine($"{lexeme.Name} {lexeme.Type} {lexeme.Value}");
-lexeme = variableTable.FindLexeme("element");
-Console.WriteLine($"{lexeme.Name} {lexeme.Type} {lexeme.Value}");
+//lexeme = variableTable.FindLexeme("element");
+//Console.WriteLine($"{lexeme.Name} {lexeme.Type} {lexeme.Value}");
 
 variableTable.SetLexemeType("item", DataType.Float);
 variableTable.SetLexemeValue("item", "99.9");
-variableTable.SetLexemeType("element", DataType.Char);
+//variableTable.SetLexemeType("element", DataType.Char);
 
 lexeme = variableTable.FindLexeme("item");
 Console.WriteLine($"{lexeme.Name} {lexeme.Type} {lexeme.Value}");

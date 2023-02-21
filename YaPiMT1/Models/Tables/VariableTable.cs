@@ -44,4 +44,12 @@ public class VariableTable
         lexeme.Value = value;
         AddLexeme(lexeme);
     }
+
+    public void PrintTable()
+    {
+        foreach (var lexeme in _tableElements)
+        {
+            Console.WriteLine(lexeme.ToString());
+        }
+    }
 }
