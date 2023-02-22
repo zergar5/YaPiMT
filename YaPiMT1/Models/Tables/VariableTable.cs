@@ -1,6 +1,4 @@
-﻿using System.Collections;
-
-namespace YaPiMT1.Models.Tables;
+﻿namespace YaPiMT1.Models.Tables;
 
 public class VariableTable
 {
@@ -13,7 +11,7 @@ public class VariableTable
 
     public void AddLexeme(Lexeme lexeme)
     {
-        if(_tableElements.Contains(lexeme)) throw new ArgumentException(nameof(lexeme), "Lexeme already exists");
+        if (_tableElements.Contains(lexeme)) throw new ArgumentException(nameof(lexeme), "Lexeme already exists");
         _tableElements.Add(lexeme);
     }
 
