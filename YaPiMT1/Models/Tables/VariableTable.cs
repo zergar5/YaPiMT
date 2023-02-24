@@ -2,50 +2,63 @@
 
 public class VariableTable
 {
-    private HashSet<Lexeme> _tableElements;
+    private List<Lexeme> _table;
 
     public VariableTable()
     {
-        _tableElements = new HashSet<Lexeme>();
+        _table = new List<Lexeme>();
     }
 
-    public void AddLexeme(Lexeme lexeme)
+    public int AddLexeme(Lexeme lexeme)
     {
-        if (_tableElements.Contains(lexeme)) throw new ArgumentException(nameof(lexeme), "Lexeme already exists");
-        _tableElements.Add(lexeme);
+        if (_table.Contains(lexeme))
+            throw new ArgumentException(nameof(lexeme), "Lexeme already exists");
+
+        _table.Add(lexeme);
+        return _table.FindIndex(x => x == lexeme);
     }
 
-    public Lexeme FindLexeme(string name)
+    public int FindIndex(string name)
     {
-        var lexeme = _tableElements.FirstOrDefault(x => x.Name == name);
-        return lexeme == default ? default : lexeme;
+        return _table.FindIndex(x => x.Name == name);
+    }
+
+    public Lexeme FindLexeme(int index)
+    {
+        return _table[index];
     }
 
     public Lexeme RemoveLexeme(string name)
     {
-        var lexeme = _tableElements.FirstOrDefault(x => x.Name == name);
+        var lexeme = _table.FirstOrDefault(x => x.Name == name);
         if (lexeme == default) throw new ArgumentNullException(nameof(lexeme), "Lexeme doesn't exist");
-        _tableElements.Remove(lexeme);
+        _table.Remove(lexeme);
         return lexeme;
     }
 
-    public void SetLexemeType(string name, DataType type)
+    public void SetLexemeType(int index, DataType type)
     {
-        var lexeme = RemoveLexeme(name);
-        lexeme.Type = type;
-        AddLexeme(lexeme);
+        _table[index] = _table[index] with { Type = type };
     }
 
-    public void SetLexemeValue(string name, string value)
+    public DataType GetLexemeType(int index)
     {
-        var lexeme = RemoveLexeme(name);
-        lexeme.Value = value;
-        AddLexeme(lexeme);
+        return _table[index].Type;
+    }
+
+    public void SetLexemeIsInitialized(int index, bool isInitialized)
+    {
+        _table[index] = _table[index] with { IsInitialized = isInitialized };
+    }
+
+    public bool GetLexemeIsInitialized(int index)
+    {
+        return _table[index].IsInitialized;
     }
 
     public void PrintTable()
     {
-        foreach (var lexeme in _tableElements)
+        foreach (var lexeme in _table)
         {
             Console.WriteLine(lexeme.ToString());
         }
