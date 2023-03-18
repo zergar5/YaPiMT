@@ -1,7 +1,7 @@
-﻿using YaPiMT1.IO;
-using YaPiMT1.Models;
-using YaPiMT1.Models.Tables;
-using YaPiMT1.Models.Tables.ConstTables;
+﻿using YaPiMT.IO;
+using YaPiMT.Models;
+using YaPiMT.Models.Tables;
+using YaPiMT.Models.Tables.ConstTables;
 
 var constTableReader = new ConstTableReader("../YaPiMT1/Input/");
 

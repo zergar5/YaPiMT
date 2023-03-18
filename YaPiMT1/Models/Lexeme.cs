@@ -1,4 +1,4 @@
-﻿namespace YaPiMT1.Models;
+﻿namespace YaPiMT.Models;
 
 public record struct Lexeme(string Name, DataType Type, bool IsInitialized)
 {

@@ -1,4 +1,4 @@
-﻿namespace YaPiMT1.Models.Tables;
+﻿namespace YaPiMT.Models.Tables;
 
 public class VariableTable
 {

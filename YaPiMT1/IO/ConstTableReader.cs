@@ -1,4 +1,4 @@
-﻿namespace YaPiMT1.IO;
+﻿namespace YaPiMT.IO;
 
 public class ConstTableReader
 {

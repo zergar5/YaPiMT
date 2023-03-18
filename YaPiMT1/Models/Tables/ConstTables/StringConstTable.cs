@@ -1,12 +1,11 @@
-﻿using YaPiMT1.IO;
+﻿using YaPiMT.IO;
 
-namespace YaPiMT1.Models.Tables.ConstTables;
+namespace YaPiMT.Models.Tables.ConstTables;
 
 public class StringConstTable : ConstTable<string>
 {
     public StringConstTable(string fileName, ConstTableReader constTableReader)
-        : base(fileName, constTableReader)
-        { }
+        : base(fileName, constTableReader) { }
 
     protected sealed override string Parse(string element)
     {
