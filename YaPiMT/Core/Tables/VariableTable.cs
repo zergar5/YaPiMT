@@ -1,4 +1,4 @@
-﻿namespace YaPiMT1.Models.Tables;
+﻿namespace YaPiMT.Core.Tables;
 
 public class VariableTable
 {
@@ -11,14 +11,12 @@ public class VariableTable
 
     public int AddLexeme(Lexeme lexeme)
     {
-        if (_table.Contains(lexeme))
-            throw new ArgumentException(nameof(lexeme), "Lexeme already exists");
+        if (!_table.Contains(lexeme)) _table.Add(lexeme);
 
-        _table.Add(lexeme);
         return _table.FindIndex(x => x == lexeme);
     }
 
-    public int FindIndex(string name)
+    public int FindLexemeIndex(string name)
     {
         return _table.FindIndex(x => x.Name == name);
     }

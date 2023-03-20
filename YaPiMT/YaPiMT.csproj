@@ -8,7 +8,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="IO\" />
+    <Folder Include="Output\" />
   </ItemGroup>
 
 </Project>

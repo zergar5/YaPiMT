@@ -1,12 +1,12 @@
-﻿using YaPiMT1.IO;
+﻿using YaPiMT.IO;
 
-namespace YaPiMT1.Models.Tables.ConstTables;
+namespace YaPiMT.Models.Tables.ConstTables;
 
 public abstract class ConstTable<T>
 {
     protected List<T> Table;
 
-    protected ConstTable(string fileName, ConstTableReader constTableReader)
+    protected ConstTable(string fileName, ConstTableIO constTableReader)
     {
         Table = new List<T>();
 
@@ -20,7 +20,12 @@ public abstract class ConstTable<T>
 
     public T FindElement(int index)
     {
-        return Table[1];
+        return Table[index];
+    }
+
+    public int FindElementIndex(T element)
+    {
+        return Table.IndexOf(element);
     }
 
     public void PrintTable()
