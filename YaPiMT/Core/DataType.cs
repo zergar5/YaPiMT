@@ -1,4 +1,4 @@
-﻿namespace YaPiMT.Models;
+﻿namespace YaPiMT.Core;
 
 public enum DataType
 {

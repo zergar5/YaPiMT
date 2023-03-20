@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "WSL": {
+      "commandName": "WSL2",
+      "distributionName": ""
+    },
+    "YaPiMT": {
+      "commandName": "Project",
+      "workingDirectory": "..\\YaPiMT"
+    }
+  }
+}

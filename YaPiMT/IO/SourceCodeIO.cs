@@ -1,21 +1,21 @@
 ﻿namespace YaPiMT.IO;
 
-public class ConstTableReader
+public class SourceCodeIO
 {
     private readonly string _path;
 
-    public ConstTableReader(string path)
+    public SourceCodeIO(string path)
     {
         _path = path;
     }
 
-    public string[] ReadFromFile(string fileName)
+    public string ReadFromFile(string fileName)
     {
         try
         {
             using var streamReader = new StreamReader(_path + fileName);
 
-            return streamReader.ReadToEnd().Split("\r\n");
+            return streamReader.ReadToEnd();
         }
         catch (Exception e)
         {

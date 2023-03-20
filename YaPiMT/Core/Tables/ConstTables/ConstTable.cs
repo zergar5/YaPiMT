@@ -6,7 +6,7 @@ public abstract class ConstTable<T>
 {
     protected List<T> Table;
 
-    protected ConstTable(string fileName, ConstTableReader constTableReader)
+    protected ConstTable(string fileName, ConstTableIO constTableReader)
     {
         Table = new List<T>();
 
@@ -21,6 +21,11 @@ public abstract class ConstTable<T>
     public T FindElement(int index)
     {
         return Table[index];
+    }
+
+    public int FindElementIndex(T element)
+    {
+        return Table.IndexOf(element);
     }
 
     public void PrintTable()
