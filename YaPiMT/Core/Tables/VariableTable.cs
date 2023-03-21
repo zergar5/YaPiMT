@@ -2,7 +2,7 @@
 
 public class VariableTable
 {
-    private List<Lexeme> _table;
+    private readonly List<Lexeme> _table;
 
     public VariableTable()
     {
@@ -26,11 +26,10 @@ public class VariableTable
         return _table[index];
     }
 
-    public Lexeme RemoveLexeme(string name)
+    public Lexeme RemoveLexeme(int index)
     {
-        var lexeme = _table.FirstOrDefault(x => x.Name == name);
-        if (lexeme == default) throw new ArgumentNullException(nameof(lexeme), "Lexeme doesn't exist");
-        _table.Remove(lexeme);
+        var lexeme = _table[index];
+        _table.RemoveAt(index);
         return lexeme;
     }
 

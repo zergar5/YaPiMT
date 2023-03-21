@@ -1,10 +1,10 @@
 ﻿using YaPiMT.IO;
 
-namespace YaPiMT.Models.Tables.ConstTables;
+namespace YaPiMT.Core.Tables.ConstTables;
 
 public abstract class ConstTable<T>
 {
-    protected List<T> Table;
+    protected readonly List<T> Table;
 
     protected ConstTable(string fileName, ConstTableIO constTableReader)
     {
