@@ -1,13 +1,6 @@
 ﻿int main()
 {
-	int x = 2;
-	int y = 3;
-
-	if(x != y)
-	{
-		if(x >= y) y = x;
-		else x = y;
-	}
-
-	return 0;
+	// correct commentary
+	/ incorrect commentary
+	/* block commentary without end */
 }

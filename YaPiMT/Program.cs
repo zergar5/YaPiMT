@@ -1,4 +1,6 @@
-﻿using YaPiMT.Core.Tables.ConstTables;
+﻿using YaPiMT.Core.Tables;
+using YaPiMT.Core;
+using YaPiMT.Core.Tables.ConstTables;
 using YaPiMT.IO;
 using YaPiMT.LexicalAnalysis;
 

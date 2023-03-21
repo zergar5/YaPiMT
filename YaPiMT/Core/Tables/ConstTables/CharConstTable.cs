@@ -1,5 +1,4 @@
 ﻿using YaPiMT.IO;
-using YaPiMT.Models.Tables.ConstTables;
 
 namespace YaPiMT.Core.Tables.ConstTables;
 
