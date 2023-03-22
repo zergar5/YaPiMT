@@ -1,1 +1,2 @@
-Line 4: Unrecognized lexeme "/"
+Line 3: Unrecognized lexeme "@"
+Line 4: Unrecognized lexeme ".;"

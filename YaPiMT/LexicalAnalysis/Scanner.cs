@@ -70,15 +70,20 @@ public class Scanner
                     }
                     else if (OperationsTable1.FindElementIndex(characterSequence[0]) != -1 || OperationsTable2.FindElementIndex(characterSequence[..1]) != -1)
                     {
+                        if (characterSequence.Length > 1)
+                        {
+                            if ((indexInTable = OperationsTable2.FindElementIndex(characterSequence[..2])) != -1)
+                            {
+                                tokens.Add(new Token(nameof(OperationsTable2), characterSequence[..2], indexInTable));
+                                characterSequence = characterSequence[2..];
+                                continue;
+                            }
+                        }
                         if ((indexInTable = OperationsTable1.FindElementIndex(characterSequence[0])) != -1)
                         {
                             tokens.Add(new Token(nameof(OperationsTable1), characterSequence[0], indexInTable));
                             characterSequence = characterSequence[1..];
-                        }
-                        else if ((indexInTable = OperationsTable2.FindElementIndex(characterSequence[..1])) != -1)
-                        {
-                            tokens.Add(new Token(nameof(OperationsTable2), characterSequence[..1], indexInTable));
-                            characterSequence = characterSequence[2..];
+                            continue;
                         }
                     }
                     else if (characterSequence[0] == '/')
