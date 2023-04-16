@@ -1,15 +1,8 @@
-﻿using System.Runtime.CompilerServices;
+﻿using YaPiMT.Core;
 using YaPiMT.Core.Errors;
-using YaPiMT.Core.Tables;
-using YaPiMT.Core;
-using YaPiMT.Core.AST;
 using YaPiMT.Core.Errors.SyntaxErrors;
+using YaPiMT.Core.Tables;
 using YaPiMT.Core.Tables.ConstTables;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.ComponentModel.Design;
-using System.Reflection.PortableExecutable;
-using YaPiMT.IO;
 
 namespace YaPiMT.SyntaxAnalysis;
 
@@ -22,7 +15,7 @@ public class Parser
     public readonly StringConstTable OperationsTable2;
     public readonly StringConstTable KeywordsTable;
     public readonly LLTable LlTable;
-    private int _ruleNumber = 0;
+    public readonly TerminalsHandler TerminalsHandler;
 
     public Parser(
         CharConstTable allowedCharactersTable,
@@ -41,6 +34,7 @@ public class Parser
         OperationsTable2 = operationsTable2;
         KeywordsTable = keywordsTable;
         LlTable = llTable;
+        TerminalsHandler = new TerminalsHandler();
     }
 
     public string Parse(List<Token> tokens, VariableTable identifiersTable,
@@ -62,9 +56,9 @@ public class Parser
         {
             var containedInTerminals = false;
 
-            if (LlTable.IsNonterminal(currentState.Terminals))
+            if (TerminalsHandler.IsNonterminal(currentState.Terminals))
             {
-                containedInTerminals = HandleNonterminal(token, currentState.Terminals);
+                containedInTerminals = TerminalsHandler.HandleNonterminal(token, currentState.Terminals);
             }
             else
             {
@@ -72,13 +66,13 @@ public class Parser
 
                 foreach (var terminal in terminals)
                 {
-                    containedInTerminals = HandleTerminal(token, terminal);
+                    containedInTerminals = TerminalsHandler.HandleTerminal(token, terminal);
                     if (containedInTerminals) break;
                 }
 
                 if (containedInTerminals)
                 {
-                    if (IsAssign(token)) init = true;
+                    if (TerminalsHandler.IsAssign(token)) init = true;
 
                     switch (init)
                     {
@@ -93,7 +87,7 @@ public class Parser
                             break;
                     }
 
-                    if (IsType(token))
+                    if (TerminalsHandler.IsType(token))
                     {
                         type = token.Name switch
                         {
@@ -107,9 +101,10 @@ public class Parser
                     if (token.TableName == "IdentifiersTable" && type != DataType.Undefined)
                         UpdateIdentifierType(identifiersTable, token, type, errors);
 
-                    if (IsIdentifier(token) &&
+                    if (TerminalsHandler.IsIdentifier(token) &&
                         identifiersTable.GetLexemeType(token.IndexInTable) == DataType.Undefined &&
-                        (IsOperator(prevToken) || prevToken.Name == "("))
+                        (TerminalsHandler.IsOperator(prevToken) || TerminalsHandler.IsAssign(prevToken) ||
+                         prevToken.Name == "("))
                         errors.Add(new UndeclaredIdentifierError(token.Name));
 
                     if (token.TableName != "KeywordsTable")
@@ -136,7 +131,7 @@ public class Parser
 
             if (currentState.Error && !containedInTerminals)
             {
-                if (!LlTable.IsNonterminal(currentState.Terminals))
+                if (!TerminalsHandler.IsNonterminal(currentState.Terminals))
                 {
                     errors.Add(new ExpectedError(currentState.Terminals));
                     break;
@@ -152,163 +147,6 @@ public class Parser
         }
 
         return rpnBuilder.ToString();
-    }
-    private bool HandleNonterminal(Token token, string nonterminal)
-    {
-        if (nonterminal == "program")
-        {
-            if (_ruleNumber == 0)
-            {
-                _ruleNumber = 1;
-                return true;
-            }
-            if (_ruleNumber == 1 && IsType(token))
-            {
-                _ruleNumber = 0;
-                return true;
-            }
-            if (_ruleNumber == 2 && IsIdentifier(token))
-            {
-                _ruleNumber = 0;
-                return true;
-            }
-            if (_ruleNumber == 3)
-            {
-                _ruleNumber = 0;
-                return true;
-            }
-
-            _ruleNumber++;
-        }
-        else if (nonterminal == "initialize" && IsType(token)) return true;
-        else if (nonterminal == "assignment" && IsIdentifier(token)) return true;
-        else if (nonterminal == "type" && IsType(token)) return true;
-        else if (nonterminal == "id" && IsIdentifier(token)) return true;
-        else if (nonterminal == "nextId")
-        {
-            if (_ruleNumber == 0)
-            {
-                _ruleNumber = 1;
-                return true;
-            }
-            if (_ruleNumber == 1 && token.Name == ",")
-            {
-                _ruleNumber = 0;
-                return true;
-            }
-            if (_ruleNumber == 2)
-            {
-                _ruleNumber = 0;
-                return true;
-            }
-
-            _ruleNumber++;
-        }
-        else if (nonterminal == "equals")
-        {
-            if (_ruleNumber == 0)
-            {
-                _ruleNumber = 1;
-                return true;
-            }
-            if (_ruleNumber == 1 && token.Name == "=")
-            {
-                _ruleNumber = 0;
-                return true;
-            }
-            if (_ruleNumber == 2)
-            {
-                _ruleNumber = 0;
-                return true;
-            }
-
-            _ruleNumber++;
-        }
-        else if (nonterminal == "expr" && (IsIdentifier(token) || IsConst(token))) return true;
-        else if (nonterminal == "operation")
-        {
-            if (_ruleNumber == 0)
-            {
-                _ruleNumber = 1;
-                return true;
-            }
-            if (_ruleNumber == 1 && IsOperator(token))
-            {
-                _ruleNumber = 0;
-                return true;
-            }
-
-            if (_ruleNumber == 2)
-            {
-                _ruleNumber = 0;
-                return true;
-            }
-
-            _ruleNumber++;
-        }
-        else if (nonterminal == "operator" && IsOperator(token)) return true;
-        else if (nonterminal == "nextOperation")
-        {
-            if (_ruleNumber == 0)
-            {
-                _ruleNumber = 1;
-                return true;
-            }
-            if (_ruleNumber == 1 && (IsIdentifier(token) || IsConst(token)))
-            {
-                _ruleNumber = 0;
-                return true;
-            }
-
-            if (_ruleNumber == 2 && token.Name == "(")
-            {
-                _ruleNumber = 0;
-                return true;
-            }
-
-            _ruleNumber++;
-        }
-        else if (nonterminal == "assign" && IsAssign(token)) return true;
-        else if (nonterminal == "eps") return true;
-
-        return false;
-    }
-
-    private bool HandleTerminal(Token token, string terminal)
-    {
-        if (terminal == "identifier" && IsIdentifier(token)) return true;
-        if (terminal == "const" && IsConst(token)) return true;
-        if (terminal == "operator" && IsOperator(token)) return true;
-        if (terminal == "assign" && IsAssign(token)) return true;
-        if (token.Name == terminal) return true;
-
-        return false;
-    }
-
-    private bool IsType(Token token)
-    {
-        return token.Name is "int" or "float" or "char";
-    }
-
-    private bool IsIdentifier(Token token)
-    {
-        return token.TableName is "IdentifiersTable";
-    }
-
-    private bool IsConst(Token token)
-    {
-        return token.TableName is "ConstantsTable";
-    }
-
-    private bool IsOperator(Token token)
-    {
-        return (token.TableName == "OperationsTable1" && token.Name != "=") ||
-               token is { TableName: "OperationsTable2", Name: "==" or "!=" };
-    }
-
-    private bool IsAssign(Token token)
-    {
-        return token.Name == "=" || token is { TableName: "OperationsTable2", Name: not ("==" and "!=") };
     }
 
     private void UpdateIdentifierType(VariableTable identifiersTable, Token token, DataType type, List<IError> errors)

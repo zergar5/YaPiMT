@@ -1,2 +1,0 @@
-'b' : undeclared identifier
-'c' : undeclared identifier

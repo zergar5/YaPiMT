@@ -1,4 +1,8 @@
 ﻿void main()
 {
-	int a = a - (b + c);
+	int a, aa = 1;
+	char b = a + aa;
+	float c;
+	c = a + b;
+	int a1a;
 }

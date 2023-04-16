@@ -1,6 +1,4 @@
-﻿using System.Net.Http.Headers;
-
-namespace YaPiMT.Core.AST;
+﻿namespace YaPiMT.Core.AST;
 
 public class StatementsNode : ExpressionNode
 {

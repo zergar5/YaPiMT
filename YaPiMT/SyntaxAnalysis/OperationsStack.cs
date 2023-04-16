@@ -1,5 +1,4 @@
-﻿using System.ComponentModel.Design;
-using YaPiMT.Core.Exceptions;
+﻿using YaPiMT.Core.Exceptions;
 
 namespace YaPiMT.SyntaxAnalysis;
 
@@ -56,20 +55,20 @@ public class OperationsStack
 
                     break;
                 default:
-                {
-                    if (priority != 0 && priority <= topOperation.Priority)
                     {
-                        while (_stack.Count > 0 && priority <= topOperation.Priority)
+                        if (priority != 0 && priority <= topOperation.Priority)
                         {
-                            operationsString += _stack.Pop().Name + " ";
-                            if (!_stack.TryPeek(out topOperation)) break;
+                            while (_stack.Count > 0 && priority <= topOperation.Priority)
+                            {
+                                operationsString += _stack.Pop().Name + " ";
+                                if (!_stack.TryPeek(out topOperation)) break;
+                            }
                         }
+
+                        _stack.Push(new Operation(operation, priority));
+
+                        break;
                     }
-
-                    _stack.Push(new Operation(operation, priority));
-
-                    break;
-                }
             }
         }
         else _stack.Push(new Operation(operation, priority));
