@@ -5,7 +5,7 @@ using YaPiMT.Core.Tables.ConstTables;
 
 namespace YaPiMT.LexicalAnalysis;
 
-public class Scanner
+public class Lexer
 {
     public readonly CharConstTable AllowedCharactersTable;
     public readonly CharConstTable NumbersTable;
@@ -14,7 +14,7 @@ public class Scanner
     public readonly StringConstTable OperationsTable2;
     public readonly StringConstTable KeywordsTable;
 
-    public Scanner(
+    public Lexer(
         CharConstTable allowedCharactersTable,
         CharConstTable numbersTable,
         CharConstTable separatorsTable,
@@ -31,7 +31,8 @@ public class Scanner
         KeywordsTable = keywordsTable;
     }
 
-    public void AnalyzeProgramCode(string sourceCode, out List<Token> tokens, out List<IError> errors, out VariableTable IdentifiersTable, out VariableTable ConstantsTable)
+    public void Analyze(string sourceCode, out List<Token> tokens, out List<IError> errors,
+        out VariableTable IdentifiersTable, out VariableTable ConstantsTable)
     {
         IdentifiersTable = new VariableTable();
         ConstantsTable = new VariableTable();
@@ -54,12 +55,6 @@ public class Scanner
 
                     int indexInTable;
 
-                    if ((indexInTable = KeywordsTable.FindElementIndex(characterSequence)) != -1)
-                    {
-                        tokens.Add(new Token(nameof(KeywordsTable), characterSequence, indexInTable));
-                        break;
-                    }
-
                     if (AllowedCharactersTable.FindElementIndex(characterSequence[0]) != -1)
                     {
                         characterSequence = CheckSequenceForIdentifier(characterSequence, IdentifiersTable, i + 1,
@@ -76,20 +71,25 @@ public class Scanner
                     }
                     else if (OperationsTable1.FindElementIndex(characterSequence[0]) != -1 || OperationsTable2.FindElementIndex(characterSequence[..1]) != -1)
                     {
+                        if (characterSequence.Length > 1)
+                        {
+                            if ((indexInTable = OperationsTable2.FindElementIndex(characterSequence[..2])) != -1)
+                            {
+                                tokens.Add(new Token(nameof(OperationsTable2), characterSequence[..2], indexInTable));
+                                characterSequence = characterSequence[2..];
+                                continue;
+                            }
+                        }
                         if ((indexInTable = OperationsTable1.FindElementIndex(characterSequence[0])) != -1)
                         {
                             tokens.Add(new Token(nameof(OperationsTable1), characterSequence[0], indexInTable));
                             characterSequence = characterSequence[1..];
-                        }
-                        else if ((indexInTable = OperationsTable2.FindElementIndex(characterSequence[..1])) != -1)
-                        {
-                            tokens.Add(new Token(nameof(OperationsTable2), characterSequence[..1], indexInTable));
-                            characterSequence = characterSequence[2..];
+                            continue;
                         }
                     }
                     else if (characterSequence[0] == '/')
                     {
-                        if (characterSequence[1] == '*')
+                        if (characterSequence.Length > 1 && characterSequence[1] == '*')
                         {
                             var indexInCharacterSequence = characterSequence.IndexOf("*/", 2);
 
@@ -97,26 +97,30 @@ public class Scanner
                             {
                                 for (; i < codeLines.Length && codeLines[i].IndexOf("*/") == -1; i++) { }
 
-                                if (i == codeLines.Length) continue;
+                                if (i == codeLines.Length)
+                                {
+                                    j = characterSequences.Length;
+                                    break;
+                                }
 
                                 j = 0;
                                 characterSequences = codeLines[i].Split(' ');
                                 for (; j < characterSequences.Length && characterSequences[j].IndexOf("*/") == -1; j++) { }
 
-                                if (j == characterSequences.Length) continue;
+                                if (j == characterSequences.Length) break;
 
                                 characterSequence = characterSequences[j];
                                 indexInCharacterSequence = characterSequence.IndexOf("*/");
-                                indexInCharacterSequence++;
-                                characterSequence = characterSequence[..indexInCharacterSequence];
+                                indexInCharacterSequence+=2;
+                                characterSequence = characterSequence[indexInCharacterSequence..];
                             }
                             else
                             {
-                                indexInCharacterSequence++;
+                                indexInCharacterSequence+=2;
                                 characterSequence = characterSequence[indexInCharacterSequence..];
                             }
                         }
-                        else if (characterSequence[1] == '/')
+                        else if (characterSequence.Length > 1 && characterSequence[1] == '/')
                         {
                             j = characterSequence.Length;
                             break;
@@ -181,11 +185,11 @@ public class Scanner
             }
         }
 
-        ConstantsTable.AddLexeme(constant.Contains('.')
+        var index = ConstantsTable.AddLexeme(constant.Contains('.')
             ? new Lexeme(constant, DataType.Float, true)
             : new Lexeme(constant, DataType.Int, true));
 
-        tokens.Add(new Token(nameof(ConstantsTable), constant, ConstantsTable.FindLexemeIndex(constant)));
+        tokens.Add(new Token(nameof(ConstantsTable), constant, index));
 
         return characterSequence[k..];
     }
@@ -216,10 +220,19 @@ public class Scanner
             }
         }
 
-        IdentifiersTable.AddLexeme(new Lexeme(identifier, DataType.Undefined, false));
+        int indexInTable;
 
-        tokens.Add(
-            new Token(nameof(IdentifiersTable), identifier, IdentifiersTable.FindLexemeIndex(identifier)));
+        if ((indexInTable = KeywordsTable.FindElementIndex(identifier)) != -1)
+        {
+            tokens.Add(new Token(nameof(KeywordsTable), identifier, indexInTable));
+        }
+        else
+        {
+            indexInTable = IdentifiersTable.AddLexeme(new Lexeme(identifier, DataType.Undefined, false));
+
+            tokens.Add(
+                new Token(nameof(IdentifiersTable), identifier, indexInTable));
+        }
 
         return characterSequence[k..];
     }

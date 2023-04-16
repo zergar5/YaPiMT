@@ -1,13 +1,4 @@
-﻿int main()
+﻿void main()
 {
-	int x = 2;
-	int y = 3;
-
-	if(x != y)
-	{
-		if(x >= y) y = x;
-		else x = y;
-	}
-
-	return 0;
+	int a = a - (b + c);
 }

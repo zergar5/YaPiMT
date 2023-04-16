@@ -2,7 +2,7 @@
 
 public class VariableTable
 {
-    private List<Lexeme> _table;
+    private readonly List<Lexeme> _table;
 
     public VariableTable()
     {

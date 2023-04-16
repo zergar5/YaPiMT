@@ -8,7 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Folder Include="Core\AST\" />
+    <Folder Include="Core\Exceptions\" />
     <Folder Include="Output\" />
+    <Folder Include="SyntaxAnalysis\" />
   </ItemGroup>
 
 </Project>
