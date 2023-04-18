@@ -51,7 +51,12 @@ public class OperationsStack
 
                     break;
                 case ";":
-                    operationsString = HandleSemicolon();
+                    operationsString = HandleSeparator(";");
+
+                    break;
+
+                case ",":
+                    operationsString = HandleSeparator(",");
 
                     break;
                 default:
@@ -97,7 +102,7 @@ public class OperationsStack
         return operationsString;
     }
 
-    private string HandleSemicolon()
+    private string HandleSeparator(string separator)
     {
         var operationsString = "";
 
@@ -106,7 +111,7 @@ public class OperationsStack
             operationsString += _stack.Pop().Name + " ";
         }
 
-        return operationsString + "; ";
+        return operationsString + $"{separator} ";
     }
 }
 

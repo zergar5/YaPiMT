@@ -1,8 +1,4 @@
 ﻿void main()
 {
-	int a, aa = 1;
-	char b = a + aa;
-	float c;
-	c = a + b;
-	int a1a;
+	int a = 1, b = 2
 }

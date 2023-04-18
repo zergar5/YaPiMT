@@ -79,7 +79,7 @@ public class Parser
                         case true when prevToken.TableName == "IdentifiersTable":
                             UpdateIdentifierIsInit(identifiersTable, prevToken, errors);
                             init = false;
-                            type = DataType.Undefined;
+                            if (token.Name == ";") type = DataType.Undefined;
                             break;
                         case true when prevToken.TableName == "ConstantsTable":
                             errors.Add(new CannotAssignToRvalueError(token.Name));
@@ -151,8 +151,8 @@ public class Parser
 
     private void UpdateIdentifierType(VariableTable identifiersTable, Token token, DataType type, List<IError> errors)
     {
-        if (identifiersTable.GetLexemeType(token.IndexInTable) == DataType.Undefined &&
-            identifiersTable.GetLexemeIsInitialized(token.IndexInTable) == false)
+        if ((identifiersTable.GetLexemeType(token.IndexInTable) == DataType.Undefined ||
+             identifiersTable.GetLexemeType(token.IndexInTable) == type))
         {
             identifiersTable.SetLexemeType(token.IndexInTable, type);
         }
