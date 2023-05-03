@@ -1,1 +1,2 @@
-Cannot resolve symbol ','
+Cannot resolve symbol '}'
+Expected '+ - * != == < > )'

@@ -25,7 +25,7 @@ public class Parser
         StringConstTable operationsTable2,
         StringConstTable keywordsTable,
         LLTable llTable
-        )
+    )
     {
         AllowedCharactersTable = allowedCharactersTable;
         NumbersTable = numbersTable;
@@ -54,72 +54,66 @@ public class Parser
 
         for (var i = 0; i < tokens.Count && LlTable.CurrentStateNumber != -1;)
         {
-            var containedInTerminals = false;
+            var terminals = currentState.Terminals.Split(' ');
 
-            if (TerminalsHandler.IsNonterminal(currentState.Terminals))
+            var containedInTerminals = TerminalsHandler.HandleTerminals(token, terminals);
+
+            if (containedInTerminals)
             {
-                containedInTerminals = TerminalsHandler.HandleNonterminal(token, currentState.Terminals);
+                if (TerminalsHandler.IsAssign(token)) init = true;
+
+                switch (init)
+                {
+                    case true when prevToken.TableName == "IdentifiersTable":
+                        UpdateIdentifierIsInit(identifiersTable, prevToken, errors);
+                        init = false;
+                        if (token.Name == ";") type = DataType.Undefined;
+                        break;
+                    case true when prevToken.TableName == "ConstantsTable":
+                        errors.Add(new CannotAssignToRvalueError(token.Name));
+                        init = false;
+                        break;
+                }
+
+                if (TerminalsHandler.IsType(token))
+                {
+                    type = token.Name switch
+                    {
+                        "int" => DataType.Int,
+                        "float" => DataType.Float,
+                        _ => DataType.Char
+                    };
+                }
+                else if (token.Name == ";") type = DataType.Undefined;
+
+                if (token.TableName == "IdentifiersTable" && type != DataType.Undefined)
+                    UpdateIdentifierType(identifiersTable, token, type, errors);
+
+                if (TerminalsHandler.IsIdentifier(token) &&
+                    identifiersTable.GetLexemeType(token.IndexInTable) == DataType.Undefined &&
+                    currentState.Accept &&
+                    (TerminalsHandler.IsOperator(prevToken) || TerminalsHandler.IsAssign(prevToken) ||
+                     prevToken.Name == "("))
+                    errors.Add(new UndeclaredIdentifierError(token.Name));
+
+                if (token.TableName != "KeywordsTable" && currentState.Accept)
+                {
+                    try
+                    {
+                        rpnBuilder.Append(token.Name);
+                    }
+                    catch (Exception)
+                    {
+                        errors.Add(new ExpectedBracketError(token.Name));
+                        break;
+                    }
+                }
             }
-            else
+            else if(currentState.Error)
             {
-                var terminals = currentState.Terminals.Split(' ');
-
-                foreach (var terminal in terminals)
-                {
-                    containedInTerminals = TerminalsHandler.HandleTerminal(token, terminal);
-                    if (containedInTerminals) break;
-                }
-
-                if (containedInTerminals)
-                {
-                    if (TerminalsHandler.IsAssign(token)) init = true;
-
-                    switch (init)
-                    {
-                        case true when prevToken.TableName == "IdentifiersTable":
-                            UpdateIdentifierIsInit(identifiersTable, prevToken, errors);
-                            init = false;
-                            if (token.Name == ";") type = DataType.Undefined;
-                            break;
-                        case true when prevToken.TableName == "ConstantsTable":
-                            errors.Add(new CannotAssignToRvalueError(token.Name));
-                            init = false;
-                            break;
-                    }
-
-                    if (TerminalsHandler.IsType(token))
-                    {
-                        type = token.Name switch
-                        {
-                            "int" => DataType.Int,
-                            "float" => DataType.Float,
-                            _ => DataType.Char
-                        };
-                    }
-                    else if (token.Name == ";") type = DataType.Undefined;
-
-                    if (token.TableName == "IdentifiersTable" && type != DataType.Undefined)
-                        UpdateIdentifierType(identifiersTable, token, type, errors);
-
-                    if (TerminalsHandler.IsIdentifier(token) &&
-                        identifiersTable.GetLexemeType(token.IndexInTable) == DataType.Undefined &&
-                        (TerminalsHandler.IsOperator(prevToken) || TerminalsHandler.IsAssign(prevToken) ||
-                         prevToken.Name == "("))
-                        errors.Add(new UndeclaredIdentifierError(token.Name));
-
-                    if (token.TableName != "KeywordsTable")
-                    {
-                        try
-                        {
-                            rpnBuilder.Append(token.Name);
-                        }
-                        catch (Exception)
-                        {
-                            errors.Add(new ExpectedBracketError(token.Name));
-                            break;
-                        }
-                    }
-                }
+                errors.Add(new CannotResolveSymbolError(token.Name));
+                errors.Add(new ExpectedError(currentState.Terminals));
+                break;
             }
 
             if (currentState.Accept)
@@ -127,20 +121,6 @@ public class Parser
                 prevToken = token;
                 i++;
                 if (i < tokens.Count) token = tokens[i];
-            }
-
-            if (currentState.Error && !containedInTerminals)
-            {
-                if (!TerminalsHandler.IsNonterminal(currentState.Terminals))
-                {
-                    errors.Add(new ExpectedError(currentState.Terminals));
-                    break;
-                }
-                else
-                {
-                    errors.Add(new CannotResolveSymbolError(token.Name));
-                    break;
-                }
             }
 
             currentState = LlTable.MoveNext(containedInTerminals);

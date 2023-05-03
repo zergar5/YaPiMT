@@ -11,4 +11,15 @@ SeparatorsTable , 0
 IdentifiersTable b 1
 OperationsTable1 = 0
 ConstantsTable 2 1
+SeparatorsTable ; 1
+KeywordsTable int 0
+IdentifiersTable c 2
+OperationsTable1 = 0
+IdentifiersTable a 0
+OperationsTable1 * 3
+SeparatorsTable ( 2
+IdentifiersTable b 1
+OperationsTable1 + 1
+ConstantsTable 2 1
+SeparatorsTable ; 1
 SeparatorsTable } 5
