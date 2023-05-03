@@ -46,7 +46,7 @@ public class TerminalsHandler
                 _ruleNumber = 0;
                 return true;
             }
-            if (_ruleNumber == 3)
+            if (_ruleNumber == 3 && token.Name == "}")
             {
                 _ruleNumber = 0;
                 return true;
@@ -70,7 +70,7 @@ public class TerminalsHandler
                 _ruleNumber = 0;
                 return true;
             }
-            if (_ruleNumber == 2)
+            if (_ruleNumber == 2 && token.Name == ";")
             {
                 _ruleNumber = 0;
                 return true;
@@ -90,7 +90,7 @@ public class TerminalsHandler
                 _ruleNumber = 0;
                 return true;
             }
-            if (_ruleNumber == 2)
+            if (_ruleNumber == 2 && token.Name == ";" || token.Name == ",")
             {
                 _ruleNumber = 0;
                 return true;
@@ -112,7 +112,7 @@ public class TerminalsHandler
                 return true;
             }
 
-            if (_ruleNumber == 2)
+            if (_ruleNumber == 2 && token.Name == ";" || token.Name == ",")
             {
                 _ruleNumber = 0;
                 return true;
@@ -143,7 +143,6 @@ public class TerminalsHandler
             _ruleNumber++;
         }
         else if (nonterminal == "assign" && IsAssign(token)) return true;
-        else if (nonterminal == "eps") return true;
 
         return false;
     }

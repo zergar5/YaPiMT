@@ -4,7 +4,7 @@ main 2 true false false true
 ) 4 true false false true
 { 5 true false false true
 program 7 false true false true
-} -1 true false false true
+} -1 true false true true
 program 10 false false false false
 program 13 false false false false
 program 16 false false false true
@@ -14,7 +14,7 @@ program 7 false false false true
 assignment 49 false true false true
 ; 15 true false false true
 program 7 false false false true
-eps -1 false false true true
+} -1 false false true true
 initialize 18 false false false true
 type 20 false true false true
 id 22 false false false true
@@ -25,18 +25,18 @@ identifier 24 true false false true
 equals 26 false true false true
 nextId 30 false false false true
 equals 28 false false false false
-equals 16 false false false true
+equals 11 false false false true
 = 29 true false false true
 expr 34 false false false true
 nextId 32 false false false false
-nextId 16 false false false true
+nextId 11 false false false true
 , 33 true false false true
 id 22 false false false true
 expr 35 false false false true
 identifier const 36 true false false true
 operation 37 false false false false
 operation 39 false false false false
-operation 16 false false false true
+operation 32 false false false true
 operator 41 false true false true
 nextOperation 43 false false false true
 operator 42 false false false true
